@@ -13,11 +13,23 @@ trait Course:
   def name: String
   def teacher: String
 
+case class CourseImpl(override val name: String, override val teacher: String) extends Course
+
+case class StudentImpl(val name: String, val year: Int) extends Student:
+  private var studentCourses: List[Course] = Nil()
+
+  override def enrolling(course: Course): Unit = studentCourses = append(studentCourses, Cons(course, Nil()))
+  override def courses: List[String] = map(studentCourses)(e => e.name)
+  def hasTeacher(teacher: String): Boolean = filter(studentCourses)(e => e.teacher.equals(teacher)) match
+    case Cons(h,t) => true
+    case _ => false
+
+
 object Student:
-  def apply(name: String, year: Int = 2017): Student = ???
+  def apply(name: String, year: Int = 2017): Student = StudentImpl(name = name, year = year)
 
 object Course:
-  def apply(name: String, teacher: String): Course = ???
+  def apply(name: String, teacher: String): Course = CourseImpl(name = name, teacher = teacher)
 
 @main def checkStudents(): Unit =
   val cPPS = Course("PPS", "Viroli")
