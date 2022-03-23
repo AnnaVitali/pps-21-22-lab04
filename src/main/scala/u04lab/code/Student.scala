@@ -5,7 +5,7 @@ import List.*
 trait Student:
   def name: String
   def year: Int
-  def enrolling(course: Course): Unit // the student participates to a Course
+  def enrolling(courses: Course*): Unit // the student participates to a Course
   def courses: List[String] // names of course the student participates to
   def hasTeacher(teacher: String): Boolean // is the student participating to a course of this teacher?
 
@@ -13,23 +13,20 @@ trait Course:
   def name: String
   def teacher: String
 
-case class CourseImpl(override val name: String, override val teacher: String) extends Course
-
-case class StudentImpl(val name: String, val year: Int) extends Student:
-  private var studentCourses: List[Course] = Nil()
-
-  override def enrolling(course: Course): Unit = studentCourses = append(studentCourses, Cons(course, Nil()))
-  override def courses: List[String] = map(studentCourses)(e => e.name)
-  def hasTeacher(teacher: String): Boolean = filter(studentCourses)(e => e.teacher.equals(teacher)) match
-    case Cons(h,t) => true
-    case _ => false
-
-
 object Student:
   def apply(name: String, year: Int = 2017): Student = StudentImpl(name = name, year = year)
 
+  private case class StudentImpl(override val name: String, override val year: Int) extends Student:
+    private var studentCourses: List[Course] = Nil()
+
+    override def enrolling(courses: Course*): Unit = for course <- courses do studentCourses = append(studentCourses, Cons(course, Nil()))
+    override def courses: List[String] = map(studentCourses)(e => e.name)
+    def hasTeacher(teacher: String): Boolean = contains(map(studentCourses)(e => e.teacher), teacher)
+
 object Course:
   def apply(name: String, teacher: String): Course = CourseImpl(name = name, teacher = teacher)
+
+  private case class CourseImpl(override val name: String, override val teacher: String) extends Course
 
 @main def checkStudents(): Unit =
   val cPPS = Course("PPS", "Viroli")
