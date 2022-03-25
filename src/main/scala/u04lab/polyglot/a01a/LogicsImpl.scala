@@ -14,16 +14,12 @@ class LogicsImpl(private val size: Int, private val boat: Int) extends Logics:
   private val boatLeftCol: Int = r.nextInt(size - boat);
   private var failures: Int = 0;
 
-  def hit(row: Int, col: Int): Result = row == this.boatRow && col >= this.boatLeftCol && col < (this.boatLeftCol + boat) match
-    case true =>
+  def hit(row: Int, col: Int): Result =
+    if row == this.boatRow && col >= this.boatLeftCol && col < (this.boatLeftCol + boat) then
       hits = append(hits, Cons(Tuple2(row,col), Nil()))
-      length(hits).equals(boat) match
-        case true => Result.WON
-        case _ => Result.HIT
-    case _ =>
+      if length(hits).equals(boat) then Result.WON else Result.HIT
+    else
       failures = failures + 1
-      failures.equals(maxFailure) match
-        case true => Result.LOST
-        case _ => Result.MISS
+      if failures.equals(maxFailure) then Result.LOST else Result.MISS
 
 
