@@ -16,7 +16,7 @@ trait Course:
 object Student:
   def apply(name: String, year: Int = 2017): Student = StudentImpl(name = name, year = year)
 
-  private case class StudentImpl(override val name: String, override val year: Int) extends Student:
+  private case class StudentImpl(name: String, year: Int) extends Student:
     private var studentCourses: List[Course] = Nil()
 
     override def enrolling(courses: Course*): Unit = for course <- courses do studentCourses = append(studentCourses, Cons(course, Nil()))
@@ -26,7 +26,7 @@ object Student:
 object Course:
   def apply(name: String, teacher: String): Course = CourseImpl(name = name, teacher = teacher)
 
-  private case class CourseImpl(override val name: String, override val teacher: String) extends Course
+  private case class CourseImpl(name: String, teacher: String) extends Course
 
 @main def checkStudents(): Unit =
   val cPPS = Course("PPS", "Viroli")
